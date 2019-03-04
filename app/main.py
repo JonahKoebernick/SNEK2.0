@@ -34,6 +34,7 @@ def move():
     game_state = bottle.request.json
     new_board = update_board(game_state)
     turn = game_state['turn']  # for testing
+    print("Turn:",turn)
     direction = calculate_move(new_board, game_state)
 
 
