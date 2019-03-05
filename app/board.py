@@ -27,10 +27,10 @@ def update_board(state):
 
     for coord in my_body[0:]:
         Matrix[coord['y']][coord['x']] = OCCUPIED
-    my_head_coord = my_body[0]
-    Matrix[coord['y']][coord['x']] = HEAD
+    tail = my_body[len(my_body)-1]
+    Matrix[tail['y']][tail['x']] = 4
 
     # print('Updated board state for turn ' + str(state['turn']) + ':\n\n' + str(board) + '\n\n')
-    for x in range(len(Matrix)):
-        print(Matrix[x])
+   # for x in range(len(Matrix)):
+   # print(Matrix[x])
     return Matrix

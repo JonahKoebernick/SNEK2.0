@@ -8,7 +8,7 @@ UNOCCUPIED = 1
 OCCUPIED   = -3
 FOOD       = 5
 HEAD       = -5
-
+TAIL       = 4
 HEALTHLIM = 30
 game_state = ""
 directions = {'up': 0, 'down': 0, 'left': 0, 'right': 0}
@@ -25,37 +25,38 @@ def calculate_move(board_matrix, game_state):
 
 
     # Check up
-    if head["y"] - 1 < 0 or board_matrix[y-1][x] == OCCUPIED:
+    if head["y"] - 1 < 0 or board_matrix[y-1][x] == OCCUPIED :
         directions["up"] = -1000
     else:
         directions["up"] = sum(board_matrix, head["x"], head["y"] - 1, height, health)
 
     # Check down
-    if head["y"] + 1 > (height - 1) or board_matrix[y+1][x] == OCCUPIED:
+    if head["y"] + 1 > (height - 1) or board_matrix[y+1][x] == OCCUPIED :
         directions["down"] = -1000
     else:
         directions["down"] = sum(board_matrix, head["x"], head["y"] + 1, height, health)
 
 
     # Check Left
-    if head["x"] - 1 < 0 or board_matrix[y][x-1] == OCCUPIED:
+    if head["x"] - 1 < 0 or board_matrix[y][x-1] == OCCUPIED :
         directions["left"] = -1000
     else:
         directions["left"] = sum(board_matrix, head["x"] - 1, head["y"], height, health)
 
 
     # check right
-    if head["x"] + 1 > (height - 1) or board_matrix[y][x+1]== OCCUPIED:
+    if head["x"] + 1 > (height - 1) or board_matrix[y][x+1]== OCCUPIED :
         directions["right"] = -1000
     else:
         directions["right"] = sum(board_matrix, head["x"] + 1, head["y"], height, health)
 
     if( health < HEALTHLIM):
-        find_path(game_state, board_matrix, health )
+        find_food(game_state, board_matrix)
 
 
 
     print(max(directions, key=lambda k: directions[k]))
+    quad(board_matrix, game_state)
     return max(directions, key=lambda k: directions[k])
 
 
@@ -88,11 +89,12 @@ def sum(matrix, x, y, height, health):
 
     return sum + matrix[y][x]
 
-def find_path(game_state, board_matrix, health ):
+
+def find_food(game_state, board_matrix ):
     minsum = 1000
     y = game_state['you']["body"][0]["y"]
     x = game_state['you']["body"][0]["x"]
-    height = game_state["board"]["height"]
+
     for food in game_state["board"]["food"]:
         tot = abs(food['x'] - x)
         tot += abs(food['y'] - y)
@@ -100,13 +102,19 @@ def find_path(game_state, board_matrix, health ):
             goodfood = food
             minsum = tot
 
+    find_path(game_state, board_matrix,x,y, goodfood["x"], goodfood['y'])
+
+
+
+def find_path(game_state, board_matrix, x, y, foodx, foody):
+    height = game_state["board"]["height"]
     grid = Grid(width=height, height=height, matrix=board_matrix)
     start = grid.node(x, y)
-    end = grid.node(goodfood['x'], goodfood['y'])
+    end = grid.node(foodx, foody)
     finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
     path, runs = finder.find_path(start, end, grid)
 
-    if (len(path) > 0 and health <= len(path)+10):
+    if (len(path) > 0):
         pathx = path[1][0]
         pathy = path[1][1]
 
@@ -136,7 +144,38 @@ def get_snek(x, y, game_state):
             if( xy["y"]== y and xy["x"]==x):
                 return snek
 
+def quad(matrix, game_state):
+    x =game_state["you"]["body"][0]["x"]
+    y = game_state["you"]["body"][0]["y"]
+    height = game_state['board']['height']
+    quad1 = 0
+    quad2 = 0
+    quad3 = 0
+    quad4 = 0
+    for i in range(y):
+        for j in range(x):
+            if(matrix[j][i]== UNOCCUPIED):
+                quad1 += 1
 
+    for i in range(y):
+        for j in range(x, height):
+            if(matrix[j][i]== UNOCCUPIED):
+                quad2 += 1
+
+    for i in range(y, height):
+        for j in range(x):
+            if(matrix[j][i]== UNOCCUPIED):
+                quad3 += 1
+
+    for i in range(y, height):
+        for j in range(x, height):
+            if(matrix[j][i]== UNOCCUPIED):
+                quad4 += 1
+    directions['up'] += (quad1 + quad2)/height
+    directions['down'] += (quad3 + quad4)/height
+    directions['left'] += (quad1 + quad3)/height
+    directions['right'] += (quad2 + quad4)/height
+    print(quad1, quad2, quad3, quad4)
 def is_bigger(snek1, snek2):
     if len(snek1["body"]) > len(snek2["body"]):
         print("length**************")
