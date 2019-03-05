@@ -1,9 +1,9 @@
 import numpy as np
 
 UNOCCUPIED = 1
-OCCUPIED   = 0
-FOOD       = 2
-HEAD       = 1
+OCCUPIED   = -3
+FOOD       = 5
+HEAD       = -5
 
 
 
