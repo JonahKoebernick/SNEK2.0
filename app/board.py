@@ -23,7 +23,10 @@ def update_board(state):
         for coord in snake_body[1:]:
             Matrix[coord['y']][coord['x']] = OCCUPIED
         Tail_coord = snake_body[len(snake_body)-1]
+        one_coord = snake_body[len(snake_body) - 2]
         Matrix[Tail_coord['y']][Tail_coord['x']] = UNOCCUPIED
+        if Tail_coord['x'] == one_coord['x'] and Tail_coord['y'] == Tail_coord['y']:
+            Matrix[Tail_coord['y']][Tail_coord['x']] = OCCUPIED
         head_coord = snake_body[0]
         Matrix[head_coord['y']][head_coord['x']] = HEAD
 
@@ -33,9 +36,9 @@ def update_board(state):
     oneback = my_body[len(my_body) - 2]
     Matrix[tail['y']][tail['x']] = 4
     if state['turn']< 3:
-        Matrix[tail['y']][tail['x']] = UNOCCUPIED
+        Matrix[tail['y']][tail['x']] = OCCUPIED
     if tail['x']== oneback['x'] and tail['y'] == oneback['y']:
-        Matrix[tail['y']][tail['x']] = UNOCCUPIED
+        Matrix[tail['y']][tail['x']] = OCCUPIED
 
 
     # print('Updated board state for turn ' + str(state['turn']) + ':\n\n' + str(board) + '\n\n')
