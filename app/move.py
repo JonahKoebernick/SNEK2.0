@@ -162,19 +162,19 @@ def find_path(game_state, board_matrix, x, y, foodx, foody):
         x = game_state['you']["body"][0]["x"]
         # go up
         if ((y - 1) == pathy) and (x == pathx):
-            directions["up"] = 20
+            directions["up"] += 20
             print("Pick: UP")
         # go down
         if ((y + 1) == pathy) and (x == pathx):
-            directions["down"] = 20
+            directions["down"] += 20
             print("Pick: down")
         # go left
         if ((x - 1) == pathx) and (y == pathy):
-            directions["left"] = 20
+            directions["left"] += 20
             print("Pick: left")
         # go right
         if ((x + 1) == pathx) and (y == pathy):
-            directions["right"] = 20
+            directions["right"] += 20
             print("Pick: right")
 
 
