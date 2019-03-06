@@ -82,7 +82,7 @@ def sum(matrix, x, y, height, gamestate):
             if is_bigger(snek, gamestate):
                 sum += 200
             else:
-                sum += -40
+                sum += -75
                 print(snek)
 
     if (x + 1) < height:
@@ -92,7 +92,7 @@ def sum(matrix, x, y, height, gamestate):
             if(is_bigger(snek, gamestate)):
                 sum += 200
             else:
-                sum += -40
+                sum += -75
                 print(snek)
 
     if (y - 1) >= 0:
@@ -102,7 +102,7 @@ def sum(matrix, x, y, height, gamestate):
             if is_bigger(snek, gamestate):
                 sum += 200
             else:
-                sum += -40
+                sum += -75
                 print(snek)
 
     if (y + 1) < height:
@@ -112,7 +112,7 @@ def sum(matrix, x, y, height, gamestate):
             if is_bigger(snek, gamestate):
                 sum += 200
             else:
-                sum += -40
+                sum += -75
                 print(snek)
 
     if (x-1) >= 0 and (y+1) < height:
