@@ -5,11 +5,11 @@ from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
 UNOCCUPIED = 1
-OCCUPIED   = -3
-FOOD       = 5
-HEAD       = -5
+OCCUPIED   = -1
+FOOD       = 1
+HEAD       = -2
 TAIL       = 4
-HEALTHLIM = 30
+HEALTHLIM = 70
 game_state = ""
 directions = {'up': 0, 'down': 0, 'left': 0, 'right': 0}
 
@@ -28,27 +28,28 @@ def calculate_move(board_matrix, game_state):
     if head["y"] - 1 < 0 or board_matrix[y-1][x] == OCCUPIED :
         directions["up"] = -1000
     else:
-        directions["up"] = sum(board_matrix, head["x"], head["y"] - 1, height, health)
+        directions["up"] = sum(board_matrix, head["x"], head["y"] - 1, height, game_state)
+
 
     # Check down
     if head["y"] + 1 > (height - 1) or board_matrix[y+1][x] == OCCUPIED :
         directions["down"] = -1000
     else:
-        directions["down"] = sum(board_matrix, head["x"], head["y"] + 1, height, health)
+        directions["down"] = sum(board_matrix, head["x"], head["y"] + 1, height, game_state)
 
 
     # Check Left
     if head["x"] - 1 < 0 or board_matrix[y][x-1] == OCCUPIED :
         directions["left"] = -1000
     else:
-        directions["left"] = sum(board_matrix, head["x"] - 1, head["y"], height, health)
+        directions["left"] = sum(board_matrix, head["x"] - 1, head["y"], height, game_state)
 
 
     # check right
     if head["x"] + 1 > (height - 1) or board_matrix[y][x+1]== OCCUPIED :
         directions["right"] = -1000
     else:
-        directions["right"] = sum(board_matrix, head["x"] + 1, head["y"], height, health)
+        directions["right"] = sum(board_matrix, head["x"] + 1, head["y"], height, game_state)
 
     if( health < HEALTHLIM):
         find_food(game_state, board_matrix)
@@ -57,23 +58,62 @@ def calculate_move(board_matrix, game_state):
 
     print(max(directions, key=lambda k: directions[k]))
     quad(board_matrix, game_state)
+    print("UP", directions["up"])
+    print("DOWN", directions["down"])
+    print("LEFT", directions["left"])
+    print("RIGHT", directions["right"])
     return max(directions, key=lambda k: directions[k])
 
 
-def sum(matrix, x, y, height, health):
+def sum(matrix, x, y, height, gamestate):
     sum = 0
+    if matrix[y ][x] == HEAD:
+        snek = get_snek(x, y , game_state)
+        if is_bigger(snek, gamestate):
+            sum += 0
+        else:
+            sum += -100
+            print(snek)
 
     if (x - 1) >= 0:
         sum += matrix[y][x-1]
+        if matrix[y][x-1] == HEAD :
+            snek = get_snek(x-1, y, game_state)
+            if is_bigger(snek, gamestate):
+                sum += 200
+            else:
+                sum += -100
+                print(snek)
 
     if (x + 1) < height:
         sum += matrix[y][x+1]
+        if matrix[y][x+1] == HEAD :
+            snek = get_snek(x+1, y, game_state)
+            if(is_bigger(snek, gamestate)):
+                sum += 200
+            else:
+                sum += -100
+                print(snek)
 
     if (y - 1) >= 0:
         sum += matrix[y-1][x]
+        if matrix[y-1][x] == HEAD :
+            snek = get_snek(x, y-1, game_state)
+            if is_bigger(snek, gamestate):
+                sum += 200
+            else:
+                sum += -100
+                print(snek)
 
     if (y + 1) < height:
         sum += matrix[y+1][x]
+        if matrix[y+1][x] == HEAD :
+            snek = get_snek(x, y+1, game_state)
+            if is_bigger(snek, gamestate):
+                sum += 200
+            else:
+                sum += -20
+                print(snek)
 
     if (x-1) >= 0 and (y+1) < height:
         sum += matrix[y+1][x-1]
@@ -122,27 +162,21 @@ def find_path(game_state, board_matrix, x, y, foodx, foody):
         x = game_state['you']["body"][0]["x"]
         # go up
         if ((y - 1) == pathy) and (x == pathx):
-            directions["up"] = 10000
+            directions["up"] = 20
             print("Pick: UP")
         # go down
         if ((y + 1) == pathy) and (x == pathx):
-            directions["down"] = 10000
+            directions["down"] = 20
             print("Pick: down")
         # go left
         if ((x - 1) == pathx) and (y == pathy):
-            directions["left"] = 10000
+            directions["left"] = 20
             print("Pick: left")
         # go right
         if ((x + 1) == pathx) and (y == pathy):
-            directions["right"] = 10000
+            directions["right"] = 20
             print("Pick: right")
 
-def get_snek(x, y, game_state):
-    for snek in game_state["board"]["snakes"]:
-        snake_body = snek['body']
-        for xy in snake_body[1:]:
-            if( xy["y"]== y and xy["x"]==x):
-                return snek
 
 def quad(matrix, game_state):
     x =game_state["you"]["body"][0]["x"]
@@ -176,15 +210,25 @@ def quad(matrix, game_state):
     directions['left'] += (quad1 + quad3)/height
     directions['right'] += (quad2 + quad4)/height
     print(quad1, quad2, quad3, quad4)
-def is_bigger(snek1, snek2):
-    if len(snek1["body"]) > len(snek2["body"]):
+
+def is_bigger(snek, game):
+    if len(game["you"]["body"]) > snek:
         print("length**************")
 
-        return true
-    return false
+        return True
+    print("SNake length", snek, "our length ", len(game['you']['body']))
+    return False
+
+def get_snek(x, y, game_state):
+    for snek in game_state["board"]["snakes"]:
+        snake_body = snek['body']
+        for xy in snake_body[0:]:
+            if( xy["y"]== y and xy["x"]==x):
+                return len(snake_body)
 
 
 def set_game_state(new_game_state):
+    global game_state
     game_state = new_game_state
 
 

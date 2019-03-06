@@ -1,9 +1,9 @@
 import numpy as np
 
 UNOCCUPIED = 1
-OCCUPIED   = -3
+OCCUPIED   = -1
 FOOD       = 5
-HEAD       = -5
+HEAD       = -2
 
 
 
@@ -23,7 +23,7 @@ def update_board(state):
         for coord in snake_body[1:]:
             Matrix[coord['y']][coord['x']] = OCCUPIED
         head_coord = snake_body[0]
-        Matrix[coord['y']][coord['x']] = HEAD
+        Matrix[head_coord['y']][head_coord['x']] = HEAD
 
     for coord in my_body[0:]:
         Matrix[coord['y']][coord['x']] = OCCUPIED
