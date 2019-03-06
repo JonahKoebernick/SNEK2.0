@@ -30,7 +30,13 @@ def update_board(state):
     for coord in my_body[0:]:
         Matrix[coord['y']][coord['x']] = OCCUPIED
     tail = my_body[len(my_body)-1]
+    oneback = my_body[len(my_body) - 2]
     Matrix[tail['y']][tail['x']] = 4
+    if state['turn']< 3:
+        Matrix[tail['y']][tail['x']] = UNOCCUPIED
+    if tail['x']== oneback['x'] and tail['y'] == oneback['y']:
+        Matrix[tail['y']][tail['x']] = UNOCCUPIED
+
 
     # print('Updated board state for turn ' + str(state['turn']) + ':\n\n' + str(board) + '\n\n')
    # for x in range(len(Matrix)):
