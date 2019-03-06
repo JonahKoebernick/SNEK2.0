@@ -51,7 +51,7 @@ def calculate_move(board_matrix, game_state):
     else:
         directions["right"] = sum(board_matrix, head["x"] + 1, head["y"], height, game_state)
 
-    if( health < HEALTHLIM):
+    if( health < HEALTHLIM and len(game_state['board']['food'])>0):
         find_food(game_state, board_matrix)
 
 
