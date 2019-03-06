@@ -22,7 +22,7 @@ def update_board(state):
         snake_body = snake['body']
         for coord in snake_body[1:]:
             Matrix[coord['y']][coord['x']] = OCCUPIED
-        Tail_coord = snake_body[len(snake_body)]
+        Tail_coord = snake_body[len(snake_body)-1]
         Matrix[Tail_coord['y']][Tail_coord['x']] = UNOCCUPIED
         head_coord = snake_body[0]
         Matrix[head_coord['y']][head_coord['x']] = HEAD
